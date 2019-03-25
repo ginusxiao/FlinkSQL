@@ -129,7 +129,7 @@ public class SqlConvertServiceImpl implements SqlConvertService {
 
         Map<String, String> columnInfos = tableInfo.getSchema();
         for (String columnName: columnInfos.keySet()){
-            String columnType = columnInfos.get(columnName);
+            String columnType = columnInfos.get(columnName).toLowerCase();
             schemas.put(columnName.trim().replace("`",""),getColumnType(columnType));
         }
 
@@ -367,41 +367,35 @@ public class SqlConvertServiceImpl implements SqlConvertService {
     private TypeInformation<?> getColumnType(String type){
         TypeInformation<?> basicTypeInfo = null ;
         switch (type) {
-            case "string":
+            case "char":
+                basicTypeInfo=BasicTypeInfo.CHAR_TYPE_INFO;
+                break;
+            case "varchar":
                 basicTypeInfo=BasicTypeInfo.STRING_TYPE_INFO;
                 break;
             case "boolean":
                 basicTypeInfo=BasicTypeInfo.BOOLEAN_TYPE_INFO;
+                break;
+            case "int":
+                basicTypeInfo=BasicTypeInfo.INT_TYPE_INFO;
+                break;
+            case "bigint":
+                basicTypeInfo=BasicTypeInfo.LONG_TYPE_INFO;
+                break;
+            case "float":
+                basicTypeInfo=BasicTypeInfo.FLOAT_TYPE_INFO;
+                break;
+            case "decimal":
+                basicTypeInfo=BasicTypeInfo.BIG_DEC_TYPE_INFO;
+                break;
+            case "double":
+                basicTypeInfo=BasicTypeInfo.DOUBLE_TYPE_INFO;
                 break;
             case "byte":
                 basicTypeInfo=BasicTypeInfo.BYTE_TYPE_INFO;
                 break;
             case "short":
                 basicTypeInfo=BasicTypeInfo.SHORT_TYPE_INFO;
-                break;
-            case "integer":
-                basicTypeInfo=BasicTypeInfo.INT_TYPE_INFO;
-                break;
-            case "long":
-                basicTypeInfo=BasicTypeInfo.LONG_TYPE_INFO;
-                break;
-            case "float":
-                basicTypeInfo=BasicTypeInfo.FLOAT_TYPE_INFO;
-                break;
-            case "double":
-                basicTypeInfo=BasicTypeInfo.DOUBLE_TYPE_INFO;
-                break;
-            case "character":
-                basicTypeInfo=BasicTypeInfo.CHAR_TYPE_INFO;
-                break;
-            case "void":
-                basicTypeInfo=BasicTypeInfo.VOID_TYPE_INFO;
-                break;
-            case "biginteger":
-                basicTypeInfo=BasicTypeInfo.BIG_INT_TYPE_INFO;
-                break;
-            case "bigdecimal":
-                basicTypeInfo=BasicTypeInfo.BIG_DEC_TYPE_INFO;
                 break;
             case "date":
                 basicTypeInfo=SqlTimeTypeInfo.DATE;

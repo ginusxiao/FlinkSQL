@@ -37,8 +37,6 @@ public abstract class AbstractKafkaSourceProvider implements FlinkTableCatalogPr
         String proctime = null;
         if(props.containsKey(JobConstant.PROCTIME)) {
             proctime = props.getOrDefault(JobConstant.PROCTIME, JobConstant.PROCTIME);
-        }else {
-            proctime = "date_time";
         }
 
         RowtimeAttributeDescriptor rowtimeAttributeDes = null;

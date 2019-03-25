@@ -39,57 +39,58 @@ public class FlinkJobTest {
                 "JAR 'hdfs://flink/udf/jedis.jar'," +
                 "JAR 'hdfs://flink/udf/customudf.jar';";
 
-        String source = "CREATE TABLE kafak_source (" +
-                "name string, " +
-                "amount float, " +
-                "date_time timestamp," +
-                "xctime timestamp," +
-                "watermark for xctime AS withOffset(xctime,1000) " +
-                ") " +
-                "with (" +
-                "type=kafka," +
-                "'flink.parallelism'=1," +
-                "'kafka.topic'=topic," +
-                "'kafka.group.id'=flinks," +
-                "'kafka.enable.auto.commit'=true," +
-                "'kafka.bootstrap.servers'='localhost:9092'" +
-                ") ;";
+        String source = "CREATE TABLE kafka_source (\n" +
+              "      department VARCHAR,\n" +
+              "      `date` DATE,\n" +
+              "      amount float, \n" +
+              "      proctime timestamp\n" +
+              "      ) \n" +
+              "with (\n" +
+              "      type=kafka,\n" +
+              "      'flink.parallelism'=1,\n" +
+              "      'kafka.topic'=topic,\n" +
+              "      'kafka.group.id'=flinks,\n" +
+              "      'kafka.enable.auto.commit'=true,\n" +
+              "      'kafka.bootstrap.servers'='localhost:9092'\n" +
+              "); ";
 
-        String sink = "CREATE TABLE mysql_sink (" +
-                "name string, " +
-                "amount float, " +
-                "PRIMARY KEY (name,amount)) " +
-                "with (" +
-                "type=mysql," +
-                "'mysql.connection'='localhost:3306'," +
-                "'mysql.db.name'=flink," +
-                "'mysql.batch.size'=0," +
-                "'mysql.table.name'=flink_table," +
-                "'mysql.user'=root," +
-                "'mysql.pass'=root" +
-                ");";
+        String sink = "CREATE TABLE mysql_sink (\n" +
+              "      `date` DATE,\n" +
+              "      amount float, \n" +
+              "      PRIMARY KEY (`date`,amount)\n" +
+              "      ) \n" +
+              "with (\n" +
+              "      type=mysql,\n" +
+              "      'mysql.connection'='localhost:3306',\n" +
+              "      'mysql.db.name'=flink,\n" +
+              "      'mysql.batch.size'=0,\n" +
+              "      'mysql.table.name'=flink_table,\n" +
+              "      'mysql.user'=root,\n" +
+              "      'mysql.pass'=root\n" +
+              "); ";
 
-        String view = "create view view_select as  " +
-                "SELECT " +
-                "name, " +
-                "amount " +
-                "FROM " +
-                "kafak_source " +
-                "group by name,amount;";
+        String view = "CREATE VIEW view_select AS \n" +
+              "      SELECT `date`, \n" +
+              "              amount \n" +
+              "      FROM kafka_source \n" +
+              "      GROUP BY \n" +
+              "            `date`,\n" +
+              "            amount\n" +
+              "      ; ";
 
 
-        String result = "insert " +
-                "into mysql_sink " +
-                "SELECT " +
-                "name, " +
-                "sum(amount) " +
-                "FROM " +
-                "view_select " +
-                "group by name;";
+        String result = "INSERT INTO mysql_sink \n" +
+              "       SELECT \n" +
+              "          `date`, \n" +
+              "          sum(amount) \n" +
+              "       FROM view_select \n" +
+              "       GROUP BY \n" +
+              "          `date`\n" +
+              "      ;";
 
         sqlContext =
                 Joiner.on("").join(
-                        udf,source,sink,view, result
+                        source,sink,view, result
                 );
 
         System.out.println(sqlContext);

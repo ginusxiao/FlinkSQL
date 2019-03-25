@@ -55,8 +55,9 @@ USING JAR 'hdfs://flink/udf/jedis.jar',
       JAR 'hdfs://flink/udf/customudf.jar';
       
       
-CREATE TABLE kafak_source (
-      `date` string,
+CREATE TABLE kafka_source (
+      department VARCHAR,
+      `date` DATE,
       amount float, 
       proctime timestamp
       ) 
@@ -71,7 +72,8 @@ with (
 
 
 CREATE TABLE mysql_sink (
-      `date` string, 
+      department VARCHAR,
+      `date` DATE,
       amount float, 
       PRIMARY KEY (`date`,amount)
       ) 
@@ -89,7 +91,7 @@ with (
 CREATE VIEW view_select AS 
       SELECT `date`, 
               amount 
-      FROM kafak_source 
+      FROM kafka_source 
       GROUP BY 
             `date`,
             amount

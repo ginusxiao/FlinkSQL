@@ -47,7 +47,7 @@ public class SqlConvertServiceTest {
                 "JAR 'hdfs://flink/udf/customudf.jar';";
 
         String source = "CREATE TABLE kafak_source (" +
-                "`date` string, " +
+                "`date` date, " +
                 "amount float, " +
                 "date timestamp," +
                 "watermark for date AS withOffset(date,1000) " +
@@ -62,7 +62,7 @@ public class SqlConvertServiceTest {
                 ");";
 
         String sink = "CREATE TABLE mysql_sink (" +
-                "`date` string, " +
+                "`date` date, " +
                 "amount float, " +
                 "PRIMARY KEY (`date`,amount)) " +
                 "with (" +
