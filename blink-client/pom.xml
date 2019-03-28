@@ -12,5 +12,16 @@
     <artifactId>blink-client</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>pingle.wang</groupId>
+            <artifactId>blink-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-runtime_${scala.binary.version}</artifactId>
+        </dependency>
+    </dependencies>
 </project>
